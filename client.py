@@ -1,16 +1,26 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 import socket
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("127.0.0.1", 1111))
+# class MntFrame(Structure):
+#     source_address = c_uint8()
+#     dest_address = c_uint8()
+#     frame_param = c_uint32()
+#     command = c_uint8()
+#     data_size = c_uint16()
+#     data = c_uint8(1024)
 
-print("Le nom du fichier que vous voulez récupérer:")
-file_name = input(">> ") # utilisez raw_input() pour les anciennes versions python
-s.send(file_name.encode())
-file_name = 'data/%s' % (file_name,)
-r = s.recv(9999999)
-with open(file_name,'wb') as _file:
-    _file.write(r)
-print("Le fichier a été correctement copié dans : %s." % file_name)
+
+TCP_IP = '127.0.0.1'
+TCP_PORT = 5005
+BUFFER_SIZE = 1024
+MESSAGE = "Hello, World!"
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+s.send(MESSAGE)
+data = s.recv(BUFFER_SIZE)
+s.close()
+
+print("received data:", data)
+

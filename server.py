@@ -1,36 +1,21 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 import socket
-import threading
 
 
-class ClientThread(threading.Thread):
-	def __init__(self, ip, port, clientsocket):
-		threading.Thread.__init__(self)
-		self.ip = ip
-		self.port = port
-		self.clientsocket = clientsocket
-		print("[+] Nouveau thread pour %s %s" % (self.ip, self.port,))
+TCP_IP = '127.0.0.1'
+TCP_PORT = 5005
+BUFFER_SIZE = 20  # Normally 1024, but we want fast response
 
-	def run(self):
-		print("Connection de %s %s" % (self.ip, self.port,))
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((TCP_IP, TCP_PORT))
+s.listen(1)
 
-		r = self.clientsocket.recv(2048)
-		print("Ouverture du fichier: ", r, "...")
-		fp = open(r, 'rb')
-		self.clientsocket.send(fp.read())
-
-		print("Client déconnecté...")
-
-
-tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-tcpsock.bind(("", 1111))
-
-while True:
-	tcpsock.listen(10)
-	print("En écoute...")
-	(clientsocket, (ip, port)) = tcpsock.accept()
-	newthread = ClientThread(ip, port, clientsocket)
-	newthread.start()
+conn, addr = s.accept()
+print 'Connection address:', addr
+while 1:
+    data = conn.recv(BUFFER_SIZE)
+    if not data: break
+    print "received data:", data
+    conn.send(data)  # echo
+conn.close()
