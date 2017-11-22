@@ -44,14 +44,21 @@ class LedControl(object):
 
 	"""
 	def __init__(self):
+		self._frame = LedControlFrame()
+		# data = s.recv(BUFFER_SIZE)
+		# ret = cast(data, LedControlFrame)
+		# self._s.close()
+		self._frame.header.dest_address = CONTROLLER_ADDRESS
+		self._frame.header.source_address = SOURCE_ADDRESS
+		self._frame.header.frame_param = (0, 0, 0)
+		self._frame.header.command = COMMAND_LED_CONTROL
+		pass
+
+	def _send(self):
 		self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self._s.connect((CONNECTION_ADDRESS, CONNECTION_PORT))
-		self._frame = LedControlFrame()
 		self._s.send(self._frame)
-		#data = s.recv(BUFFER_SIZE)
-		# ret = cast(data, LedControlFrame)
-		#s.close()
-
+		self._s.close()
 		pass
 
 	def set_led(self, led_number, state):
@@ -62,4 +69,9 @@ class LedControl(object):
 		:param state: the state
 		:return: The error code
 		"""
+		self._frame.ledNumber = led_number
+		self._frame.ledControlType = 0
+		self._frame.type.normal.state = state
+		self._frame.header.data_size = sizeof(LedControlFrame) - sizeof(FrameHeader)
+		self._send()
 		pass

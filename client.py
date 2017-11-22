@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+# #!/usr/bin/env python
 
 import socket
 from ctypes import *
@@ -58,36 +59,23 @@ from ctypes import *
 #     ]
 
 TCP_IP = '127.0.0.1'
-TCP_IP = '192.168.0.12'
-TCP_PORT = 1000
+# TCP_IP = '192.168.0.12'
+TCP_PORT = 49452
 BUFFER_SIZE = 1024
-MESSAGE = "Hello, World!"
+MESSAGE = 'Hello, World!'
 mess = create_string_buffer(0x30, 1024)
 
 test = c_uint16 * 5
 
-frame = LedControlFrame()
-
-#print("taille de MntFrame : " + str(sizeof(MntFrame)))
-#print("taille de c_char_p : " + str(sizeof(c_char_p)))
-#print("Valeur de ptData : " + str(param.isParted))
-#print("taille de MntFrameParam : " + str(sizeof(param)))
-#print("adresse de ptData : " + hex(addressof(ptData)))
-#print("adresse de frame : " + hex(addressof(frame)))
-#print("adresse de frame.data : " + hex(addressof(frame.data)))
-
-frame.header.dest_address = 2
-frame.header.source_address = 1
-frame.header.command = 1
-frame.header.data_size = sizeof(LedControlFrame) - sizeof(MntFrameHeader)
-
-frame.ledNumber = 0
-frame.ledControlType = 0
-frame.type.normal = 0
-
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
-s.send(frame)
+s.send(MESSAGE.encode())
+data = s.recv(BUFFER_SIZE)
+# ret = cast(data, LedControlFrame)
+#s.close()
+
+s.connect((TCP_IP, TCP_PORT))
+s.send(MESSAGE.encode())
 data = s.recv(BUFFER_SIZE)
 # ret = cast(data, LedControlFrame)
 s.close()
