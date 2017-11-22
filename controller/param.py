@@ -1,0 +1,4 @@
+# -*- coding:utf-8 -*-
+
+CONNECTION_PORT = 1000
+CONNECTION_ADDRESS = '192.168.0.12'
