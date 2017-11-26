@@ -4,4 +4,5 @@
 import controller
 
 control = controller.LedControl()
-control.set_led(0, True)
+control.set_led(1, True)
+
